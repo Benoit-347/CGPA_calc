@@ -1,4 +1,5 @@
-#wtite predict
+#write special identification value for unknown
+#write predict
 #code tester
 #code changer
 
@@ -169,7 +170,7 @@ def predict(a):
 def main():
     global all_dict
     all_dict = convert_csv_to_dict()
-    print(calc_CGPA_all())
-    print(calc_CGPA_sem())
+    print(f"\nDict of each sub cgpa and credit:\n\n{calc_CGPA_all()}")
+    print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(), 2)}\n")
 
 main()
