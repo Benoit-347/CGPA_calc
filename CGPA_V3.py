@@ -1,7 +1,10 @@
+#wtite predict
+#code tester
+#code changer
+
 import csv
 
 def read_marks():
-    import csv
     global dict1
     dict1 = {}
     with open("MarksV3.csv", 'r') as file1:
@@ -89,8 +92,9 @@ def convert_csv_to_dict():
             all[row[0]] = {row[1]: [int(row[2]), int(row[3])], row[4]: [int(row[5]), int(row[6])], row[7]: [int(row[8]), int(row[9])], row[10]: int(row[11])}
     return all
 
+#can be added to next fn to reduce quantity and confusion
 def calc_total_value_done_sub(sub_dict):
-    a = sub_dict['assignment'][0]
+    a = sub_dict['assignment'][0]       #This is also used later, combine to reduce computation
     if a:
         assignment = a
     else:
@@ -156,7 +160,11 @@ def calc_CGPA_sem():
             total_mark += 9*sub[1]
         else:
             total_mark += sub[0]*sub[1]
-    return total_mark/total_credit
+    return (total_mark)/total_credit
+
+def predict(a):
+    #how much mark to earn in IA to get a CGPA?
+    pass
 
 def main():
     global all_dict
