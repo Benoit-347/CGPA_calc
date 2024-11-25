@@ -2,6 +2,7 @@
 #write predict
 #code tester
 #code changer
+#mistake trya again
 
 import csv
 
@@ -71,7 +72,7 @@ def write_get_sub_to_csv():
             row.append(j)
             row.extend(type[j])
         formatted_data.append(row)
-    file_name = "Marks_V3.csv"
+    file_name = "Marks_V3_bet.csv"
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
         writer.writerows(formatted_data)
@@ -79,17 +80,18 @@ def write_get_sub_to_csv():
     os.startfile(file_name)
 
 def read_from_csv():
-    with open("Marks_V3.csv", 'r') as file1:
+    with open("Marks_V3_bet.csv", 'r') as file1:
         reader = csv.reader(file1)
         formated_data = []
         for i in reader:
-            formated_data.append(i)
+            if i[0] != "":
+                formated_data.append(i)
     return formated_data
 
 def convert_csv_to_dict():
     all = {}
     for row in read_from_csv():
-        if row[0]:
+        if row:
             all[row[0]] = {row[1]: [int(row[2]), int(row[3])], row[4]: [int(row[5]), int(row[6])], row[7]: [int(row[8]), int(row[9])], row[10]: int(row[11])}
     return all
 
@@ -147,7 +149,7 @@ def calc_CGPA_all():
             total_cgpa = (assignment*a + lab*b + ia*c)/d
         else:
             total_cgpa = 0
-        cgpa_dict[sub] = [total_cgpa*10, sub_dict['credit']]
+        cgpa_dict[sub] = [round(total_cgpa*10, 2), sub_dict['credit']]
     return cgpa_dict
 
 def calc_CGPA_sem():
@@ -160,17 +162,42 @@ def calc_CGPA_sem():
         if sub[0] == 0:
             total_mark += 9*sub[1]
         else:
-            total_mark += sub[0]*sub[1]
+            total_mark += sub[0]*sub[1] 
     return (total_mark)/total_credit
 
-def predict(a):
+def get_req_value(sub_name, sub_dict, num_IA, req_cgpa, external_expected):
+    total = calc_total_value_done_sub(sub_dict)[3]
+    ia_value = 50/7.5
+    extra_total = (num_IA*ia_value + 50)
+    current_value = (cgpa_dict[sub_name][0]/10)*total
+    req_value = req_cgpa*(total + extra_total)/10 - current_value
+    return round((req_value-50*external_expected)/num_IA, 1)
+
+def predict(req_cgpa, IA_left, external_expected):
+    req_mark_list = []
+    for dict in all_dict:
+        sub_name = dict
+        req_mark_list.append([dict, get_req_value(sub_name, all_dict[dict], IA_left, req_cgpa, external_expected)*7.5])
+    return req_mark_list
+
     #how much mark to earn in IA to get a CGPA?
     pass
 
+def predict_avg_mark():
+    #calc on avg how much mark each sub on IA 
+    pass
+
 def main():
-    global all_dict
+    global all_dict, cgpa_dict
     all_dict = convert_csv_to_dict()
-    print(f"\nDict of each sub cgpa and credit:\n\n{calc_CGPA_all()}")
+    cgpa_dict = calc_CGPA_all()
+    print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(), 2)}\n")
+    print(predict(9, 2, 0.9))
 
 main()
+#dsa
+#dar
+#ddca
+#os
+#dae
