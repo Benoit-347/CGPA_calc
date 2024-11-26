@@ -183,7 +183,16 @@ def predict(req_cgpa, IA_left, external_expected):
     #how much mark to earn in IA to get a CGPA?
     pass
 
-def predict_avg_mark():
+def predict_avg_mark(list1):
+    sub = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
+    credits = [4, 4, 3, 3, 3, 1, 1, 1]
+    total = 0
+    j = 0
+    for i in list1:
+        total += i*credits[j]
+        j += 1
+    avg_mark_req = total/20
+    return avg_mark_req
     #calc on avg how much mark each sub on IA 
     pass
 
@@ -193,7 +202,9 @@ def main():
     cgpa_dict = calc_CGPA_all()
     print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(), 2)}\n")
-    print(predict(9, 2, 0.9))
+    marks_req_list = predict(9, 2, 0.9)
+    print(marks_req_list)
+    print(predict_avg_mark(marks_req_list))
 
 main()
 #dsa
