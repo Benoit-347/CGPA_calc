@@ -16,7 +16,13 @@ def read_marks():
         for i in a:
             dict1[i[0]] = {"Lab": float(i[1]), "IA": float(i[2]), "credits": float(i[3])}
 
-
+def get_int(a):
+    while True:
+        try:
+            num = int(input(a))
+            return num
+        except:
+            print("error: input was not int\nTry again:")
 
 def get_all_sub_marks():
     sub = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
@@ -29,38 +35,38 @@ def get_all_sub_marks():
         lab_mark = [a,b]
         a, b =  get_IA_mark()
         IA_mark = [a,b]
-        credit = [int(input("enter course credit weight: "))]
+        credit = [get_int("enter course credit weight: ")]
         all[i] = {'assignment': assignment_mark, 'lab': lab_mark, 'IA': IA_mark, 'credit': credit}
     return all
 
 def get_IA_mark():
-    num_IA = int(input("enter no. of IAs: "))
+    num_IA = get_int("enter no. of IAs: ")
     total = 0
     mark = 0
     for i in range(num_IA):
         print(f"For IA {i}:")
         total += 50
-        mark += int(input("enter mark (scaled  to 50): "))
+        mark += get_int("enter mark (scaled  to 50): ")
     return total, mark
 
 def get_lab_mark():
-    num_lab = int(input("enter no. of labs: "))
+    num_lab = get_int("enter no. of labs: ")
     total = 0
     mark = 0
     for i in range(num_lab):
         print(f"For Lab {i}:")
         total += 30
-        mark += int(input("enter mark (scaled each lab to 30): "))
+        mark += get_int("enter mark (scaled each lab to 30): ")
     return total, mark
 
 def get_assignment_mark():
-    num_assignment = int(input("enter no. of assignments: "))
+    num_assignment = get_int("enter no. of assignments: ")
     total = 0
     mark = 0
     for i in range(num_assignment):
         print(f"For assignment {i}:")
         total += 10
-        mark += int(input("enter mark of assignment: "))
+        mark += get_int("enter mark of assignment: ")
     return total, mark
 
 def write_get_sub_to_csv():
