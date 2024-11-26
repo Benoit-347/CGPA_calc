@@ -1,8 +1,9 @@
 #write special identification value for unknown
 #write predict
 #code tester
+#change code to store individual values to be able to change
 #code changer
-#mistake trya again
+#mistake try again
 
 import csv
 
