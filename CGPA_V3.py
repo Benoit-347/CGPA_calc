@@ -1,5 +1,6 @@
 #write special identification value for unknown
 #write predict
+#change code to give impossible when overcap
 #code tester
 #change code to store individual values to be able to change
 #code changer
@@ -172,9 +173,15 @@ def get_req_value(sub_name, sub_dict, num_IA, req_cgpa, external_expected):
     extra_total = (num_IA*ia_value + 50)
     current_value = (cgpa_dict[sub_name][0]/10)*total
     req_value = req_cgpa*(total + extra_total)/10 - current_value
-    return round((req_value-50*external_expected)/num_IA, 1)
+    ans = round((req_value-50*external_expected)/num_IA, 1)
+    if ans>50:
+        return None
+    else:
+        return ans
 
-def predict(req_cgpa, IA_left, external_expected):
+def predict(req_cgpa, IA_left, external_expected=None):
+    if external_expected== None:
+        external_expected = get_int("how much do you expect to get in externals?: ")
     req_mark_list = []
     for dict in all_dict:
         sub_name = dict
