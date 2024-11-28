@@ -7,12 +7,16 @@
 #code changer
 #add feature to do practical calc (rns method)
 
+#if possible convert program into an android app with website
+
 #added:
 
 #predict mark needed per sub to get req cgpa
 #predict avg mark req in all sub to get req cgpa (useful if you sucked in a few subs and recover through others)
 #has error handling with wrong input to not re-enter whole program
 #shows when its not possible to obtain specified cgpa
+
+
 
 #code:
 
