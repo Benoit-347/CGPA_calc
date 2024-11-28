@@ -86,7 +86,7 @@ class ResultScreen(Screen):
 class SubjectInputApp(App):
     def build(self):
         # Data
-        subject_list = ['math', 'chemistry', 'plc']
+        subject_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
         result_list = []
 
         # Create ScreenManager
