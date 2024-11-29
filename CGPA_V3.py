@@ -6,6 +6,8 @@
 #change code to store individual values to be able to change later
 #code changer
 #add feature to do practical calc (rns method)
+#show colored graph of marks needed
+#highlight marks with huge variance (and analysis like lab vs ia)
 
 #if possible convert program into an android app with website
 
