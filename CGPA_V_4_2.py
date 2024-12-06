@@ -1,3 +1,29 @@
+"""Features:
+
+
+Adding:
+
+#change code to store individual values to be able to change later
+#code changer
+
+
+#need to add:
+
+#code tester
+#add feature to do practical calc (rns method)
+#show colored graph of marks needed
+#highlight marks with huge variance (and analysis like lab vs ia)
+
+#if possible convert program into an android app with website
+
+
+#added:
+
+#predict mark needed per sub to get req cgpa
+#predict avg mark req in all sub to get req cgpa (useful if you sucked in a few subs and recover through others)
+#has error handling with wrong input to not re-enter whole program
+#shows when its not possible to obtain specified cgpa"""
+
 import csv
 
 #the dict: {'math': {'ia': [["value:", value], [9, 10],[8,10]], 'lab':.., 'credit': [[]]}}
@@ -67,7 +93,7 @@ def get_all_sub_marks():
                   'IA': IA_list, 
                   'credit': [[credit]]
                   }
-    print(all)
+        
     return all
 
 
@@ -83,7 +109,6 @@ def write_get_sub_to_csv():
             type_list = types_dict[type_name]
             for i in type_list: #the value list, marks list
                 row.extend(i)
-                print("extended:", i)
         formatted_data.append(row)
     file_name = "Marks_V4_trial.csv"
     with open(file_name, 'w') as file1:
@@ -108,7 +133,6 @@ def read_from_csv():
                             except:
                                 new_list.append(j)
                     formated_data.append(new_list)
-    print(formated_data)
     return formated_data
 
 
@@ -125,10 +149,8 @@ def convert_csv_to_dict():
         assignment_list = [row[2:4], row[4:6]]
         for i in range(num_assignment):
             assignment_list.append(row[num_assignment_index+1+i*2 : num_assignment_index+3+i*2])
-        print(assignment_list) 
         num_lab_index = num_assignment_index+num_assignment*2+5
         num_lab = row[num_lab_index]
-        print(num_lab)
         lab_list = [row[num_lab_index-3:num_lab_index-1], row[num_lab_index-1:num_lab_index+1]]
         for i in range(num_lab):
             lab_list.append(row[num_lab_index+1+i*2 : num_lab_index+3+i*2])
@@ -140,6 +162,58 @@ def convert_csv_to_dict():
             IA_list.append(row[num_IA_index+1+i*2 : num_IA_index+3+i*2])
         length = len(row)
         all[row[0]] = {row[1]: assignment_list, row[num_lab_index-4]: lab_list, row[num_IA_index-4]: IA_list, row[length-2]: [[row[length-1]]]}
-    print(all)    
     return all
 
+
+
+
+
+
+#used to in the calculating cgpa (the denominator)
+def calc_total_value_done_sub(sub_dict):
+    a = sub_dict['assignment'][0]       #This is also used later, combine to reduce computation
+    if a:
+        assignment = a
+    else:
+        assignment = 0
+    a = sub_dict['lab'][0]/25
+    if a:
+        lab = a
+    else:
+        lab = 0
+    a = sub_dict['IA'][0]/7.5
+    if a:
+        ia = a
+    else:
+        ia = 0
+    total = assignment + lab + ia
+    return assignment, lab, ia, total
+
+#main CGPA calculator
+def calc_CGPA_all():
+    cgpa_dict = {}
+    for sub in all_dict:
+        sub_dict = all_dict[sub]
+
+        if sub_dict['assignment'][0]:
+            assignment = sub_dict['assignment'][1]/sub_dict['assignment'][0]
+        else:
+            assignment = 0
+
+        if sub_dict['lab'][0]:
+            lab = sub_dict['lab'][1]/sub_dict['lab'][0]
+        else:
+            lab = 0
+
+        if sub_dict['IA'][0]:
+            ia = sub_dict['IA'][1]/sub_dict['IA'][0]
+        else:
+            ia = 0
+
+        a, b, c, d = calc_total_value_done_sub(sub_dict)
+        if assignment or lab or ia:
+            total_cgpa = (assignment*a + lab*b + ia*c)/d
+        else:
+            total_cgpa = 0
+        cgpa_dict[sub] = [round(total_cgpa*10, 2), sub_dict['credit']]
+    return cgpa_dict
