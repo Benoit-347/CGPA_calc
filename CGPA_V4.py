@@ -139,7 +139,28 @@ def convert_csv_to_dict():
         for i in range(num_IA):
             IA_list.append(row[num_IA_index+1+i*2 : num_IA_index+3+i*2])
         length = len(row)
-        all[row[0]] = {row[1]: assignment_list, row[num_lab_index-4]: lab_list, row[num_IA_index-4]: IA_list, row[length-2]: [row[length-1]]}
+        all[row[0]] = {row[1]: assignment_list, row[num_lab_index-4]: lab_list, row[num_IA_index-4]: IA_list, row[length-2]: [[row[length-1]]]}
     print(all)    
     return all
-convert_csv_to_dict()
+
+def write_get_sub_to_csv():
+    dict_data = convert_csv_to_dict()
+    formatted_data = []
+    for sub_name in dict_data:  #column sub name
+        row = []
+        row.append(sub_name)
+        types_dict = dict_data[sub_name]
+        for type_name in types_dict:    #IA, lab..
+            row.append(type_name)
+            type_list = types_dict[type_name]
+            for i in type_list: #the value list, marks list
+                row.extend(i)
+                print("extended:", i)
+        formatted_data.append(row)
+    file_name = "Marks_V4_trial_beta.csv"
+    with open(file_name, 'w') as file1:
+        writer = csv.writer(file1)
+        writer.writerows(formatted_data)
+    import os
+    os.startfile(file_name)
+write_get_sub_to_csv()
