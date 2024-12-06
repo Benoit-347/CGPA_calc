@@ -126,19 +126,20 @@ def convert_csv_to_dict():
         for i in range(num_assignment):
             assignment_list.append(row[num_assignment_index+1+i*2 : num_assignment_index+3+i*2])
         print(assignment_list) 
-        num_lab_index = num_assignment_index+num_assignment*2+4
+        num_lab_index = num_assignment_index+num_assignment*2+5
         num_lab = row[num_lab_index]
-        lab_list = [[row[num_lab_index-3:num_lab_index-1]], [row[num_lab_index-1:num_lab_index+1]]]
+        print(num_lab)
+        lab_list = [row[num_lab_index-3:num_lab_index-1], row[num_lab_index-1:num_lab_index+1]]
         for i in range(num_lab):
             lab_list.append(row[num_lab_index+1+i*2 : num_lab_index+3+i*2])
 
-        num_IA_index = num_lab_index+num_lab*2+4
+        num_IA_index = num_lab_index+num_lab*2+5
         num_IA = row[num_IA_index]
-        IA_list = [[row[num_IA_index-3:num_IA_index-1]], [row[num_IA_index-1:num_IA_index+1]]]
+        IA_list = [row[num_IA_index-3:num_IA_index-1], row[num_IA_index-1:num_IA_index+1]]
         for i in range(num_IA):
             IA_list.append(row[num_IA_index+1+i*2 : num_IA_index+3+i*2])
         length = len(row)
         all[row[0]] = {row[1]: assignment_list, row[num_lab_index-4]: lab_list, row[num_IA_index-4]: IA_list, row[length-2]: [row[length-1]]}
     print(all)    
     return all
-write_get_sub_to_csv()
+convert_csv_to_dict()
