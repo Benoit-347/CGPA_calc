@@ -79,10 +79,9 @@ def get_ia_mark():
     return value, num, list1
 
 
-def get_all_sub_marks():
-    sub = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
+def get_all_sub_marks(sub_list):
     all = {}
-    for i in sub:
+    for i in sub_list:
         print(f"For subject {i}:")
         assignment_value, assignment_num, assignment_list = get_assignment_mark()
         lab_value, lab_num, lab_list = get_lab_mark()
@@ -103,8 +102,8 @@ def get_all_sub_marks():
     return all
 
 
-def write_get_sub_to_csv():
-    dict_data = get_all_sub_marks()
+def write_get_sub_to_csv(sub_list):
+    dict_data = get_all_sub_marks(sub_list)
     formatted_data = []
     for sub_name in dict_data:  #column sub name
         row = []
@@ -328,6 +327,7 @@ def predict(all_dict, req_cgpa, external_expected=None):
         sub_dict = all_dict[sub_name]
         credit = sub_dict['credit'][0][0]
         num_ia_left, ia_mark, external_mark = get_req_value(sub_dict, req_cgpa)
+        ia_mark, external_mark = round(ia_mark), round(external_mark)
         if not ia_mark >50: 
             req_mark_list.append([sub_name, {'num_IA_left': num_ia_left, 'IA': ia_mark, 'Finals': external_mark, 'credit': credit}])
         else:
@@ -336,49 +336,37 @@ def predict(all_dict, req_cgpa, external_expected=None):
     return req_mark_list
 
 
-
-#calc on avg how much mark you require for each sub on ia to get req sem cgpa
-def predict_avg_mark(list1):
-    credits = [4, 4, 3, 3, 3, 1, 1, 1]
-    total = 0
-    j = 0
-    for i in list1:
-        total += i[1]*credits[j]
-        j += 1
-    avg_mark_req = total/20
-    if not avg_mark_req>50:
-        return avg_mark_req
-    else:
-        return "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
-
-
 #calc on avg how much mark you require for each sub on ia to get req sem cgpa
 def predict_avg_mark(req_mark_list):
-    total = 0
+    total_ia = 0
+    total_external = 0
     j = 0
     for sub_list in req_mark_list:
         credit = sub_list[1]['credit']
-        total += sub_list[1]*credits[j]
+        total_ia += sub_list[1]['IA']*credit
+        total_external += sub_list[1]['Finals']*credit
         j += 1
-    avg_mark_req = total/20
-    if not avg_mark_req>50:
-        return avg_mark_req
+    avg_ia_mark_req = total_ia/20
+    avg_external_mark_req = total_external/20
+    if avg_ia_mark_req<=50 and avg_external_mark_req <= 100:
+        return avg_ia_mark_req, avg_external_mark_req
     else:
-        return "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
-
-
-
-
+        return None, "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
 
 
 def main():
+    sub_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
+    # write_get_sub_to_csv(sub_list)
     all_dict = convert_csv_to_dict()
     cgpa_dict = calc_CGPA_all(all_dict)
     print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
     marks_req_list = predict(all_dict, 9, 0.9)
     print(marks_req_list)
-    print(f"\nNeed to score: {predict_avg_mark(marks_req_list)} marks, in all subjects to get specified CGPA\n")
-
+    avg_ia_mark_req, avg_external_mark_req = predict_avg_mark(marks_req_list)
+    if avg_ia_mark_req != None:
+        print(f"\nNeed to score IA: {avg_ia_mark_req} marks\nNeed to score Finals: {avg_external_mark_req} marks in all subjects to get specified CGPA\n")
+    else:
+        print(avg_external_mark_req)
 
 main()
