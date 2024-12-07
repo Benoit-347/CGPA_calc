@@ -3,9 +3,9 @@
 
 Adding:
 
-#change code to store individual values to be able to change later
-#code changer
 
+#code changer
+#add feature to do practical calc (rns method)
 
 #need to add:
 
@@ -19,6 +19,8 @@ Adding:
 
 #added:
 
+#give data with expected externals input or if want to include externals as well in prediction
+#change code to store individual values to be able to change later
 #predict mark needed per sub to get req cgpa
 #predict avg mark req in all sub to get req cgpa (useful if you sucked in a few subs and recover through others)
 #has error handling with wrong input to not re-enter whole program
@@ -102,7 +104,7 @@ def get_all_sub_marks(sub_list):
     return all
 
 
-def write_get_sub_to_csv(sub_list):
+def write_get_sub_to_csv(sub_list, file_name):
     dict_data = get_all_sub_marks(sub_list)
     formatted_data = []
     for sub_name in dict_data:  #column sub name
@@ -115,7 +117,6 @@ def write_get_sub_to_csv(sub_list):
             for i in type_list: #the value list, marks list
                 row.extend(i)
         formatted_data.append(row)
-    file_name = "Marks_V4_trial.csv"
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
         writer.writerows(formatted_data)
@@ -123,8 +124,8 @@ def write_get_sub_to_csv(sub_list):
     os.startfile(file_name)
 
 
-def read_from_csv():
-    with open("Marks_V4_trial.csv", 'r') as file1:
+def read_from_csv(file_name):
+    with open(file_name, 'r') as file1:
         reader = csv.reader(file1)
         formated_data = []
         for i in reader:
@@ -157,10 +158,10 @@ the dict: {'math': {'assignment_value': [[assignment_value]],
 #the list: [['math', 'assignment_value', 12, 'assignment_num', 2, 'assignment', 12, 12, 12, 12, 'lab_value', 12, 'lab_num', 2, 'lab', 1, 1, 1, 1, 'ia_value', 30, 'ia_num', 1, 'ia', 40, 50, 'credit', 4]
 
 """
-def convert_csv_to_dict():
-    all = {}
-    for row in read_from_csv():
+def convert_csv_to_dict(readlines_data):
 
+    all = {}
+    for row in readlines_data:
 
         #gets ia_list, assignment_list, lab_list
         assignment_num_index = 4
@@ -366,13 +367,80 @@ def predict_avg_mark(req_mark_list):
         return None, "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
 
 
-def main():
+def get_subject_from_csv(sub, sub_list, csv_data):
+    sub_index = sub_list.index(sub)
+    row = csv_data[sub_index]
+    assignment_num_index = 4
+    assignment_num = row[assignment_num_index]
+    print("\n\nSubject: Math")
+    for i in range(assignment_num):
+        index = assignment_num_index+2+i*2
+        print(f"\nAssignment{i+1}: scored {row[index]} out of {row[index + 1]}")
+    print("\n", end = "")
+    lab_num_index = assignment_num_index+assignment_num*2+5
+    lab_num = row[lab_num_index]
+    for i in range(lab_num):
+        index = lab_num_index+2+i*2
+        print(f"\nLab{i+1}: scored {row[index]} out of {row[index + 1]}")
+    print("\n", end = "")
+
+    ia_num_index = lab_num_index+lab_num*2+5
+    ia_num = row[ia_num_index]
+    for i in range(ia_num):
+        index = ia_num_index+2+i*2
+        print(f"\nIA{i+1}: scored {row[index]} out of {row[index + 1]}")
+    print("\n", end = "")
+
+
+def change_and_return_data(sub_list, csv_data, sub, type, num, new_value):
+    sub_index = sub_list.index(sub)
+    row = csv_data[sub_index]
+
+    assignment_num_index = 4
+    assignment_num = row[assignment_num_index]
+
+    lab_num_index = assignment_num_index+assignment_num*2+5
+    lab_num = row[lab_num_index]
+
+    ia_num_index = lab_num_index+lab_num*2+5
+    ia_num = row[ia_num_index]
+
+    if type == "assignment":
+        index = assignment_num_index+2+(num-1)*2
+        while new_value> row[index+1]:
+            new_value = get_int("New Value too high")
+        row[index] = new_value
+        return csv_data
+
+    elif type == "lab":
+        index = lab_num_index+2+(num-1)*2
+        while new_value> row[index+1]:
+            new_value = get_int("New Value too high")
+        row[index] = new_value
+        return csv_data
+    
+    elif type == "ia":
+        index = ia_num_index+2+(num-1)*2
+        while new_value> row[index+1]:
+            new_value = get_int("New Value too high")
+        row[index] = new_value
+        return csv_data
+
+    else:
+        print("Error no match for type")
+
+
+
+
+def main(file_name):
     sub_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
-    # write_get_sub_to_csv(sub_list)
-    all_dict = convert_csv_to_dict()
+    # write_get_sub_to_csv(sub_list, file_name)
+    csv_data = read_from_csv(file_name)
+    all_dict = convert_csv_to_dict(csv_data)
     cgpa_dict = calc_CGPA_all(all_dict)
     print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
+
     marks_req_list = predict(all_dict, 9,max_assignment=3, max_lab=10, max_ia=3, external_expected=90)
     print(marks_req_list)
     avg_ia_mark_req, avg_external_mark_req = predict_avg_mark(marks_req_list)
@@ -381,4 +449,13 @@ def main():
     else:
         print(avg_external_mark_req)
 
-main()
+
+    new_read = change_and_return_data(sub_list, csv_data, 'math', 'lab', num= 2, new_value=20)
+
+
+    with open(file_name, 'w') as file1:
+        writer = csv.writer(file1)
+        writer.writerows(new_read)
+
+    get_subject_from_csv('math', sub_list, csv_data)
+main(file_name = "Marks_V4_trial.csv")
