@@ -141,7 +141,6 @@ def read_from_csv():
                     formated_data.append(new_list)
     return formated_data
 
-print(read_from_csv())
 
 """
 the dict: {'math': {'assignment_value': [[assignment_value]],
@@ -196,23 +195,15 @@ def convert_csv_to_dict():
 
 #used to in the calculating cgpa (the denominator)
 def calc_total_value_done_sub(sub_dict):
-    a = sub_dict['assignment'][0]       #This is also used later, combine to reduce computation
-    if a:
-        assignment = a
-    else:
-        assignment = 0
-    a = sub_dict['lab'][0]/25
-    if a:
-        lab = a
-    else:
-        lab = 0
-    a = sub_dict['IA'][0]/7.5
-    if a:
-        ia = a
-    else:
-        ia = 0
+    assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
+
+    lab = sub_dict['lab_value'][0][0] 
+
+    ia = sub_dict['IA_value'][0][0] 
+
     total = assignment + lab + ia
-    return assignment, lab, ia, total
+    
+    return total
 """
         'math':   {'assignment_value': [[assignment_value]],
                   'assignment_num': [[assignment_num]],
@@ -233,25 +224,36 @@ def calc_CGPA_all(all_dict):
     for sub in all_dict:
         sub_dict = all_dict[sub]
 
-        if sub_dict['assignment_num'][0][0]:
-            assignment = sub_dict['assignment'][1]/sub_dict['assignment'][0]
+        assignment_mark = 0
+        for i in range(sub_dict['assignment_num'][0][0]):
+            assignment_mark += sub_dict['assignment'][i][0]
+        if assignment_mark:
+            assignment = assignment_mark*sub_dict['assignment_value'][0][0]/(sub_dict['assignment'][0][1]*sub_dict['assignment_num'][0][0])
         else:
             assignment = 0
 
-        if sub_dict['lab'][0]:
-            lab = sub_dict['lab'][1]/sub_dict['lab'][0]
+        lab_mark = 0
+        for i in range(sub_dict['lab_num'][0][0]):
+            lab_mark += sub_dict['lab'][i][0]
+        if lab_mark:
+            lab = lab_mark*sub_dict['lab_value'][0][0]/(sub_dict['lab'][0][1]*sub_dict['lab_num'][0][0])
         else:
             lab = 0
 
-        if sub_dict['IA'][0]:
-            ia = sub_dict['IA'][1]/sub_dict['IA'][0]
+        IA_mark = 0
+        for i in range(sub_dict['IA_num'][0][0]):
+            IA_mark += sub_dict['IA'][i][0]
+        if IA_mark:
+            IA = IA_mark*sub_dict['IA_value'][0][0]/(sub_dict['IA'][0][1]*sub_dict['IA_num'][0][0])
         else:
-            ia = 0
+            IA = 0
 
-        a, b, c, d = calc_total_value_done_sub(sub_dict)
-        if assignment or lab or ia:
-            total_cgpa = (assignment*a + lab*b + ia*c)/d
+        total = calc_total_value_done_sub(sub_dict)
+        if total:
+            total_cgpa = (assignment + lab + IA)/total
         else:
             total_cgpa = 0
-        cgpa_dict[sub] = [round(total_cgpa*10, 2), sub_dict['credit']]
+        cgpa_dict[sub] = [round(total_cgpa*10, 2), sub_dict['credit'][0][0]]
     return cgpa_dict
+
+print(calc_CGPA_all(convert_csv_to_dict()))
