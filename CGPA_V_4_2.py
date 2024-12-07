@@ -307,6 +307,8 @@ def get_req_value(sub_name, sub_dict, req_cgpa, external_expected):
     temp_req_IA_only_value = req_value - 50*req_cgpa/10
     print(temp_req_IA_only_value)
     ans = (temp_req_IA_only_value)/num_ia_left
+    print(num_ia_left)
+    print(ans)
     return ans
 
 
@@ -323,7 +325,7 @@ def predict(all_dict, req_cgpa, external_expected=None):
     req_mark_list = []
     for sub_name in all_dict:
         ans = round((get_req_value(sub_name, all_dict[sub_name], req_cgpa, external_expected)*7.5))
-        if not ans >50: 
+        if ans <= 50: 
             req_mark_list.append([sub_name, ans])
         else:
             print(f"Note: Not possible to get {req_cgpa} in {sub_name}\n")

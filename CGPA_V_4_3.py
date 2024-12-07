@@ -277,11 +277,10 @@ def get_true_total_value_done(sub_dict, max_assignment, max_lab, max_ia):
     assignment_total = sub_dict['assignment_num'][0][0]/max_assignment*sub_dict['assignment_value'][0][0]
     lab_total = sub_dict['lab_num'][0][0]/max_lab*sub_dict['lab_value'][0][0]
     ia_total = sub_dict['ia_num'][0][0]/max_ia*sub_dict['ia_value'][0][0]
-    print("true total:",assignment_total, lab_total, ia_total)
     return assignment_total, lab_total, ia_total
 
 #used to predict the marks req for achivieng required cgpa
-def get_req_value(sub_dict, req_cgpa, external_expected = 0.9, lab_expected = 0.9):
+def get_req_value(sub_dict, req_cgpa, external_expected = None, lab_expected = 0.9):
     max_assignment = 1
     max_lab = 6
     max_ia = 3
@@ -290,28 +289,32 @@ def get_req_value(sub_dict, req_cgpa, external_expected = 0.9, lab_expected = 0.
     total_true_value_done = assignment_value_done + lab_value_done + ia_value_done
     assignment, lab, ia = get_assignment_lab_ia_value(sub_dict)
     assignment_true_got, lab_true_got, ia_true_got = assignment*num_assignment/max_assignment, lab*num_lab/max_lab, ia*num_ia/max_ia
-    print("total got",assignment_true_got, lab_true_got, ia_true_got)
+
     total_true_value_got = assignment_true_got + lab_true_got + ia_true_got
-    print("total got added:",total_true_value_got)
+
     net_req_value = (100)*req_cgpa/10 - total_true_value_got
-    print("net req",net_req_value)
+
     
     num_assignment_left, num_lab_left, num_ia_left = max_assignment - num_assignment, max_lab - num_lab, max_ia - num_ia
 
     assignment_value, lab_value, ia_value = sub_dict['assignment_value'][0][0], sub_dict['lab_value'][0][0], sub_dict['ia_value'][0][0]
     
     req_value = net_req_value - (num_assignment_left/max_assignment*assignment_value + num_lab_left/max_lab*lab_value)
-    print("added_follwing to  got:", num_assignment_left/max_assignment*assignment_value , num_lab_left/max_lab*lab_value , num_ia_left/max_ia*ia_value)
-    print("new req value:",req_value)
-    percent_req_ia_external = req_value/(num_ia_left*(ia_value/max_ia) + 50*req_cgpa/10)
-    ia_value, external_value = ia_value*percent_req_ia_external, 50*percent_req_ia_external
-    ia_mark_req = 50*(ia_value/ia_value)
-    external_mark_req = 100*(50/external_value)
-    return num_ia_left, ia_mark_req, external_mark_req
 
 
+    if external_expected == None:
+        percent_req_ia_external = (req_value/(ia_value*num_ia_left/max_ia + 50))
 
 
+        ia_value_req, external_value_req = ia_value*percent_req_ia_external, 50*percent_req_ia_external
+        ia_mark_req = 50*(ia_value_req/ia_value)
+        external_mark_req = 100*(external_value_req/50)
+        return num_ia_left, ia_mark_req, external_mark_req
+
+    else:
+        req_ia_only_value = req_value - 50*req_cgpa/10
+        per_ia = (req_ia_only_value)/num_ia_left
+        return per_ia
 
 #main prediction fn
 #basically: how much marks needed to be earned in each ia remaining to get a req CGPA
@@ -323,13 +326,13 @@ def predict(all_dict, req_cgpa, external_expected=None):
     req_mark_list = []
     for sub_name in all_dict:
         sub_dict = all_dict[sub_name]
-        credit = sub_dict['credits'][0][0]
-        num_ia_left, ia_mark, external_mark = get_req_value(sub_dict, req_cgpa, external_expected)
+        credit = sub_dict['credit'][0][0]
+        num_ia_left, ia_mark, external_mark = get_req_value(sub_dict, req_cgpa)
         if not ia_mark >50: 
-            req_mark_list.append([sub_name, {'num_IA_left': num_ia_left, 'IA': ia_mark, 'Finals': external_mark, 'credits': credit}])
+            req_mark_list.append([sub_name, {'num_IA_left': num_ia_left, 'IA': ia_mark, 'Finals': external_mark, 'credit': credit}])
         else:
             print(f"Note: Not possible to get {req_cgpa} in {sub_name}\n")
-            req_mark_list.append([sub_name, {'num_IA_left': num_ia_left, 'IA': ia_mark, 'Finals': external_mark, 'credits': credit}])
+            req_mark_list.append([sub_name, {'num_IA_left': num_ia_left, 'IA': ia_mark, 'Finals': external_mark, 'credit': credit}])
     return req_mark_list
 
 
@@ -354,7 +357,7 @@ def predict_avg_mark(req_mark_list):
     total = 0
     j = 0
     for sub_list in req_mark_list:
-        credit = sub_list[1]['credits']
+        credit = sub_list[1]['credit']
         total += sub_list[1]*credits[j]
         j += 1
     avg_mark_req = total/20
