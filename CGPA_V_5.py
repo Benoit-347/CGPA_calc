@@ -3,7 +3,8 @@
 
 Adding:
 
-
+#feature to seperate adding standard value of max assignment, value, scale
+#custom calc for some subjects with different layout (create a fn that will serve as all subject fn(para changes formula by itself))
 #feature to do practical calc (rns method)
 
 #need to add:
