@@ -1,0 +1,15 @@
+math,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,20,lab_num,5,lab,12,12,12,12,12,12,12,12,12,12,ia_value,20,ia_num,1,ia,40,50,credit,4
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+chemistry,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,20,lab_num,5,lab,30,30,30,30,29,30,30,30,30,30,ia_value,20,ia_num,1,ia,45,50,credit,3
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+plc,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,20,lab_num,5,lab,12,12,12,12,12,12,12,12,12,12,ia_value,20,ia_num,1,ia,50,50,credit,3
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+caed,assignment_value,0,assignment_num,0,assignment,lab_value,0,lab_num,0,lab,ia_value,0,ia_num,0,ia,credit,3,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+civil,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,0,lab_num,0,lab,ia_value,20,ia_num,1,ia,45,50,credit,3,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+english,assignment_value,10,assignment_num,1,assignment,9,10,lab_value,0,lab_num,0,lab,ia_value,30,ia_num,1,ia,20,30,credit,1,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+sfh,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,0,lab_num,0,lab,ia_value,30,ia_num,1,ia,22,25,credit,1,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+kannada,assignment_value,10,assignment_num,1,assignment,10,10,lab_value,0,lab_num,0,lab,ia_value,30,ia_num,1,ia,29,30,credit,1,,,,,,,,,,
