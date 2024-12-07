@@ -218,35 +218,39 @@ def calc_total_value_done_sub(sub_dict):
                   }
 """
 
+def get_assignment_lab_IA_value(sub_dict):
+    assignment_mark = 0
+    for i in range(sub_dict['assignment_num'][0][0]):
+        assignment_mark += sub_dict['assignment'][i][0]
+    if assignment_mark:
+        assignment = assignment_mark*sub_dict['assignment_value'][0][0]/(sub_dict['assignment'][0][1]*sub_dict['assignment_num'][0][0])
+    else:
+        assignment = 0
+
+    lab_mark = 0
+    for i in range(sub_dict['lab_num'][0][0]):
+        lab_mark += sub_dict['lab'][i][0]
+    if lab_mark:
+        lab = lab_mark*sub_dict['lab_value'][0][0]/(sub_dict['lab'][0][1]*sub_dict['lab_num'][0][0])
+    else:
+        lab = 0
+
+    IA_mark = 0
+    for i in range(sub_dict['IA_num'][0][0]):
+        IA_mark += sub_dict['IA'][i][0]
+    if IA_mark:
+        IA = IA_mark*sub_dict['IA_value'][0][0]/(sub_dict['IA'][0][1]*sub_dict['IA_num'][0][0])
+    else:
+        IA = 0
+    return assignment, lab, IA
+
 #main CGPA calculator
 def calc_CGPA_all(all_dict):
     cgpa_dict = {}
     for sub in all_dict:
         sub_dict = all_dict[sub]
 
-        assignment_mark = 0
-        for i in range(sub_dict['assignment_num'][0][0]):
-            assignment_mark += sub_dict['assignment'][i][0]
-        if assignment_mark:
-            assignment = assignment_mark*sub_dict['assignment_value'][0][0]/(sub_dict['assignment'][0][1]*sub_dict['assignment_num'][0][0])
-        else:
-            assignment = 0
-
-        lab_mark = 0
-        for i in range(sub_dict['lab_num'][0][0]):
-            lab_mark += sub_dict['lab'][i][0]
-        if lab_mark:
-            lab = lab_mark*sub_dict['lab_value'][0][0]/(sub_dict['lab'][0][1]*sub_dict['lab_num'][0][0])
-        else:
-            lab = 0
-
-        IA_mark = 0
-        for i in range(sub_dict['IA_num'][0][0]):
-            IA_mark += sub_dict['IA'][i][0]
-        if IA_mark:
-            IA = IA_mark*sub_dict['IA_value'][0][0]/(sub_dict['IA'][0][1]*sub_dict['IA_num'][0][0])
-        else:
-            IA = 0
+        assignment, lab, IA = get_assignment_lab_IA_value(sub_dict)
 
         total = calc_total_value_done_sub(sub_dict)
         if total:
@@ -256,4 +260,81 @@ def calc_CGPA_all(all_dict):
         cgpa_dict[sub] = [round(total_cgpa*10, 2), sub_dict['credit'][0][0]]
     return cgpa_dict
 
-print(calc_CGPA_all(convert_csv_to_dict()))
+
+def calc_CGPA_sem(sub_cgpa_dict):
+    credit_obtained = 0
+    total_credit = 0
+    for i in sub_cgpa_dict:
+        sub = sub_cgpa_dict[i]
+        if sub[0] != 0:
+            credit_obtained += sub[0]*sub[1]
+            total_credit += sub[1]
+            
+    return (credit_obtained)/total_credit
+
+
+def get_true_total_value_done(sub_dict, max_assignment, max_lab, max_ia)
+
+
+#used to predict the marks req for achivieng required cgpa
+def get_req_value(sub_name, sub_dict, req_cgpa, external_expected):
+
+    num_assignment, num_lab, num_ia = - sub_dict['assignment_num'][0][0], sub_dict['lab_num'][0][0], sub_dict['IA_num'][0][0]
+    num_assignment_left, num_lab_left, num_ia_left = 3 - num_assignment, 10 - num_lab, 3 - num_ia
+
+    assignment_value, lab_value, ia_value = sub_dict['assignment_value'][0][0], sub_dict['lab_value'][0][0], sub_dict['IA_value'][0][0]
+    
+    total = calc_total_value_done_sub(sub_dict)
+    extra_total = num_assignment_left*assignment_value + num_lab_left*lab_value + num_ia_left*ia_value + 50
+    assignment, lab, IA = get_assignment_lab_IA_value(sub_dict)
+    current_value = assignment + lab + IA
+    req_value = req_cgpa*(total + extra_total)/10 - current_value -50*external_expected - (assignment_value*num_assignment + lab_value*num_lab + ia_value*num_ia)
+    ans = (req_value)/num_ia_left
+    return ans
+
+
+
+
+
+#main prediction fn
+#basically: how much marks needed to be earned in each IA remaining to get a req CGPA
+def predict(all_dict, req_cgpa, external_expected=None):
+
+    if external_expected== None:
+        external_expected = get_int("how much do you expect to get in externals?: ")
+
+    req_mark_list = []
+    for sub_name in all_dict:
+        ans = round((get_req_value(sub_name, all_dict[sub_name], req_cgpa, external_expected)*7.5))
+        if not ans >50: 
+            req_mark_list.append([sub_name, ans])
+        else:
+            print(f"Note: Not possible to get {req_cgpa} in {sub_name}\n")
+            req_mark_list.append([sub_name, ans])
+    return req_mark_list
+
+#calc on avg how much mark you require for each sub on IA to get req sem cgpa
+def predict_avg_mark(list1):
+    sub = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
+    credits = [4, 4, 3, 3, 3, 1, 1, 1]
+    total = 0
+    j = 0
+    for i in list1:
+        total += i[1]*credits[j]
+        j += 1
+    avg_mark_req = total/20
+    if not avg_mark_req>50:
+        return avg_mark_req
+    else:
+        return "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
+
+def main():
+    all_dict = convert_csv_to_dict()
+    cgpa_dict = calc_CGPA_all(all_dict)
+    print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
+    print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
+    marks_req_list = predict(all_dict, 10, 0.9)
+    print(marks_req_list)
+    print(f"\nNeed to score: {predict_avg_mark(marks_req_list)} marks, in all subjects to get specified CGPA\n")
+
+main()
