@@ -3,7 +3,7 @@
 
 Adding:
 
-#feature to seperate adding standard value of max assignment, value, scale
+
 #custom calc for some subjects with different layout (create a fn that will serve as all subject fn(para changes formula by itself))
 #feature to do practical calc (rns method)
 
@@ -19,6 +19,7 @@ Adding:
 
 #added:
 
+#creates and reads from a config file to create marks dictionary (feature to seperate adding standard value of max assignment, value, scale for each entry, standardizing it)
 #easily change individual values of exel file with one command
 #easily print organised data of individual subjects with one command
 #give data with expected externals input or if want to include externals as well in prediction
@@ -29,26 +30,6 @@ Adding:
 #shows when its not possible to obtain specified cgpa"""
 
 import csv
-
-def get_configure_dict(num_of_subjects):
-    sub_dict = {}
-    for i in range(num_of_subjects):
-        while True:
-            sub_name = input("enter subject name: ")
-            temp = {"assignment_num":get_int("Enter number of assignments: "), "max_assignment_num": get_int("maximum number of assignments: "),"assignment_value": get_int("value of assignments (out of whole course): "), 
-                                                    "lab_num":get_int("Enter number of labs: "), "max_lab_num": get_int("maximum number of labs: "),"lab_value": get_int("value of lab (out of whole course): "),
-                                                    "ia_num":get_int("Enter number of IAs: "), "max_ia_num": get_int("max_ia_num: "),"ia_value": get_int("ia_value: ")}
-            if temp["assignment_value"] + temp["lab_value"] + temp["ia_value"] == 100:
-                if temp["assignment_num"] <= temp["max_assignment_num"] and temp["lab_num"] <= temp["max_lab_num"] and temp["ia_num"] <= temp["max_ia_num"]:
-                    break
-                else:
-                    print("\nNumber of assignments/labs/IA greater than maximum\nTry again:")
-            else:
-                print("\nTotal value != 100\nTry again:")
-        sub_dict[sub_name] = temp
-    return sub_dict
-
-#the dict: {'math': {'ia': [["value:", value], [9, 10],[8,10]], 'lab':.., 'credit': [[]]}}
 
 def get_int(a, max = None):
     if max == None:
@@ -70,57 +51,111 @@ def get_int(a, max = None):
                 print("error: input was not int\nTry again:")
 
 
-def get_assignment_mark():
-    num = get_int("enter no. of assignments: ", 3)
-    value = get_int("enter value: ")
-    scale = get_int("enter scale: ")
+
+def get_configure_dict(num_of_subjects):
+    sub_dict = {}
+    for i in range(num_of_subjects):
+        while True:
+            sub_name = input("enter subject name: ")
+            temp = { "max_assignment_num": get_int("maximum number of assignments: "),"assignment_num":get_int("Enter number of assignments completed: "), "assignment_scale": get_int("Enter scale of assignment: "),"assignment_value": get_int("value of assignments (out of whole course): "),
+                     "max_lab_num": get_int("maximum number of labs: "),"lab_num":get_int("Enter number of labs completed: "), "lab_scale": get_int("Enter scale of lab: "),"lab_value": get_int("value of lab (out of whole course): "),
+                     "max_ia_num": get_int("maximum number of IAs: "),"ia_num":get_int("Enter number of IAs completed: "), "ia_scale": get_int("Enter scale of IA: "),"ia_value": get_int("value of IA (out of whole course): "),
+                      "credit": get_int("enter credit weight of course: ")}
+            if temp["assignment_value"] + temp["lab_value"] + temp["ia_value"] == 50:
+                if temp["assignment_num"] <= temp["max_assignment_num"] and temp["lab_num"] <= temp["max_lab_num"] and temp["ia_num"] <= temp["max_ia_num"]:
+                    break
+                else:
+                    print("\nNumber of assignments/labs/IA greater than maximum\nTry again:")
+            else:
+                print("\nTotal value != 100\nTry again:")
+        sub_dict[sub_name] = temp
+    return sub_dict
+
+#the dict: {'math': {'ia': [["value:", value], [9, 10],[8,10]], 'lab':.., 'credit': [[]]}}
+
+def convert_config_to_csv(dict_config):
+    result = []
+    for sub in dict_config:
+        row = []
+        row.append(sub)
+        sub_dict = dict_config[sub]
+        for type in sub_dict:
+            row.append(type)
+            row.append(sub_dict[type])
+        result.append(row)
+    return result
+
+def write_config(csv_format, file_name):
+    with open(file_name, 'w') as file1:
+        writer = csv.writer(file1)
+        writer.writerows(csv_format)
+        import os
+        os.startfile(file_name)
+
+def create_config(num_subjects, file_name):
+    write_config(convert_config_to_csv(get_configure_dict(num_subjects)), file_name)
+
+
+def convert_config_to_dict(csv_format):
+    result = {}
+    for row in csv_format:
+        sub_name = row[0]
+        dict1 = {}
+        for i in range(1, 1+ 3*4*2 + 2, 2):
+            dict1[row[i]] = row[i+1]
+        result[sub_name] = dict1
+    return result
+
+
+def get_assignment_mark(num, scale):
     list1 = []
     for i in range(1, num+1):
         print(f"For assignment {i}:")
         list1.append([get_int("enter mark: "), scale])
-    return value, num, list1
+    return list1
 
-def get_lab_mark():
-    num = get_int("enter no. of labs: ", 12)
-    value = get_int("enter value: ")
-    scale = get_int("enter scale: ")
+def get_lab_mark(num, scale):
     list1 = []
     for i in range(1, num+1):
         print(f"For lab {i}:")
         list1.append([get_int("enter mark: "), scale])
-    return value, num, list1
+    return list1
 
-def get_ia_mark():
-    num = get_int("enter no. of ias: ", 3)
-    value = get_int("enter value: ")
-    scale = get_int("enter scale: ")
+def get_ia_mark(num, scale):
     list1 = []
     for i in range(1, num+1):
         print(f"For ia {i}:")
         list1.append([get_int("enter mark: "), scale])
-    return value, num, list1
+    return list1
 
 
-def get_all_sub_marks(sub_list):
+def get_all_sub_marks(config_data):
+    print(config_data)
     all = {}
-    for i in sub_list:
-        print(f"For subject {i}:")
-        assignment_value, assignment_num, assignment_list = get_assignment_mark()
-        lab_value, lab_num, lab_list = get_lab_mark()
-        ia_value, ia_num, ia_list =  get_ia_mark()
-        credit = get_int("enter course credit weight: ")
-        all[i] = {'assignment_value': [[assignment_value]],
-                  'assignment_num': [[assignment_num]],
+    for sub_name in config_data:
+        sub_dict = config_data[sub_name]
+        num_assignment, num_lab, num_ia, scale_assignment, scale_lab, scale_ia = sub_dict['assignment_num'], sub_dict['lab_num'], sub_dict['ia_num'], sub_dict['assignment_scale'], sub_dict['lab_scale'], sub_dict['ia_scale']
+        print(f"For subject {sub_name}:")
+        assignment_list = get_assignment_mark(num_assignment, scale_assignment)
+        lab_list = get_lab_mark(num_lab, scale_lab)
+        ia_list =  get_ia_mark(num_ia, scale_ia)
+        assignment_value, lab_value, ia_value = sub_dict['assignment_value'], sub_dict['lab_value'], sub_dict['ia_value']
+        max_assignment_num, max_lab_num, max_ia_num = sub_dict['max_assignment_num'], sub_dict['max_lab_num'], sub_dict['max_ia_num']
+        credit = sub_dict['credit']
+        all[sub_name] = {'assignment_value': [[assignment_value]],
+                  'assignment_num': [[num_assignment]],
                   'assignment': assignment_list,
                   'lab_value': [[lab_value]], 
-                  'lab_num': [[lab_num]], 
+                  'lab_num': [[num_lab]], 
                   'lab': lab_list, 
                   'ia_value': [[ia_value]],
-                  'ia_num': [[ia_num]],
+                  'ia_num': [[num_ia]],
                   'ia': ia_list,
-                  'credit': [[credit]]
+                  'credit': [[credit]],
+                  'max_assignment_num': [[max_assignment_num]],
+                  'max_lab_num': [[max_lab_num]],
+                  'max_ia_num': [[max_ia_num]]
                   }
-        
     return all
 
 
@@ -485,9 +520,11 @@ change_and_return_data(sub_list, csv_data, 'math', 'lab', num= 2, new_value=20)
 Eg: before: Lab2: scored 18 out of 20
     after:  Lab2: scored 20 out of 20
 """
-def main(file_name):
-    sub_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
-    write_get_sub_to_csv(sub_list, file_name)
+
+
+def main(file_name, config_file_name):
+    config_data =  convert_config_to_dict(read_from_csv(config_file_name))
+    write_get_sub_to_csv(config_data, file_name)
     csv_data = read_from_csv(file_name)
     all_dict = convert_csv_to_dict(csv_data)
     cgpa_dict = calc_CGPA_all(all_dict)
@@ -504,12 +541,12 @@ def main(file_name):
         print(avg_external_mark_req)
 
 
-    new_read = change_and_return_data(sub_list, csv_data, 'math', 'lab', num= 2, new_value=20)
+    new_read = change_and_return_data(config_data, csv_data, 'math', 'lab', num= 2, new_value=20)
 
 
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
         writer.writerows(new_read)
 
-    get_subject_from_csv('math', sub_list, csv_data)
-main(file_name = "Marks_V5_trial.csv")
+    get_subject_from_csv('math', config_data, csv_data)
+main(file_name = "Marks_V7.csv", config_file_name= "config_1.csv")
