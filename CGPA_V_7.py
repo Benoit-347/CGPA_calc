@@ -4,10 +4,14 @@
 Adding:
 
 
-#custom calc for some subjects with different layout (create a fn that will serve as all subject fn(para changes formula by itself))
+
 #feature to do practical calc (rns method)
 
 #need to add:
+
+#add editting lab_values
+#add lab exam marks as para
+#solve for divide by zero error when no test taken yet
 
 #code tester
 #add feature to do practical calc (rns method)
@@ -15,7 +19,7 @@ Adding:
 #highlight marks with huge variance (and analysis like lab vs ia)
 
 #if possible convert program into an android app with website
-
+#custom calc for some subjects with different layout (create a fn that will serve as all subject fn(para changes formula by itself))
 
 #added:
 
@@ -549,4 +553,6 @@ def main(file_name, config_file_name):
         writer.writerows(new_read)
 
     get_subject_from_csv('math', config_data, csv_data)
-main(file_name = "Marks_V7.csv", config_file_name= "config_1.csv")
+#main(file_name = "Betina_Marks_V7.csv", config_file_name= "config_betina_sem_3.csv")
+#main(file_name = "Marks_V7.csv", config_file_name= "config_1.csv")
+create_config(8, "config_betina_sem_3.csv")
