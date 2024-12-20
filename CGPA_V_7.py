@@ -253,12 +253,25 @@ def convert_csv_to_dict(readlines_data):
 
 
 #used to in the calculating cgpa (the denominator)
-def calc_total_value_done_sub(sub_dict):
-    assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
+def calc_totdef calc_total_value_done_sub(sub_dict):
+    assignment = 0
+    if sub_dict['assignment_num'][0][0]:
+        assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
+    if sub_dict['lab_num'][0][0]:
+        lab = sub_dict['lab_value'][0][0] 
+    if sub_dict['ia_num'][0][0]:
+        ia = sub_dict['ia_value'][0][0] 
 
-    lab = sub_dict['lab_value'][0][0] 
-
-    ia = sub_dict['ia_value'][0][0] 
+    total = assignment + lab + ia
+    
+    return totalal_value_done_sub(sub_dict):
+    assignment = 0
+    if sub_dict['assignment_num'][0][0]:
+        assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
+    if sub_dict['lab_num'][0][0]:
+        lab = sub_dict['lab_value'][0][0] 
+    if sub_dict['ia_num'][0][0]:
+        ia = sub_dict['ia_value'][0][0] 
 
     total = assignment + lab + ia
     
