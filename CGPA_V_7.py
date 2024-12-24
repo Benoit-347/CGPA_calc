@@ -253,19 +253,8 @@ def convert_csv_to_dict(readlines_data):
 
 
 #used to in the calculating cgpa (the denominator)
-def calc_totdef calc_total_value_done_sub(sub_dict):
-    assignment = 0
-    if sub_dict['assignment_num'][0][0]:
-        assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
-    if sub_dict['lab_num'][0][0]:
-        lab = sub_dict['lab_value'][0][0] 
-    if sub_dict['ia_num'][0][0]:
-        ia = sub_dict['ia_value'][0][0] 
-
-    total = assignment + lab + ia
-    
-    return totalal_value_done_sub(sub_dict):
-    assignment = 0
+def calc_total_value_done_sub(sub_dict):
+    assignment =  lab = ia = 0
     if sub_dict['assignment_num'][0][0]:
         assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
     if sub_dict['lab_num'][0][0]:
@@ -566,6 +555,7 @@ def main(file_name, config_file_name):
         writer.writerows(new_read)
 
     get_subject_from_csv('math', config_data, csv_data)
-#main(file_name = "Betina_Marks_V7.csv", config_file_name= "config_betina_sem_3.csv")
-#main(file_name = "Marks_V7.csv", config_file_name= "config_1.csv")
-create_config(8, "config_betina_sem_3.csv")
+    config_file_name = ""
+    file_name = ""
+create_config(8, config_file_name)
+main(file_name, config_file_name)
