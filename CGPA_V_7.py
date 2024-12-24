@@ -40,14 +40,17 @@ def get_int(a, max = None):
         while True:
             try:
                 num = int(input(a))
-                return num
+                if num >= 0:
+                    return num
+                else:
+                    print("\nNo negative number, try again:\n")
             except:
                 print("error: input was not int\nTry again:")
     else:
         while True:
             try:
                 num = int(input(a))
-                if num <= max:
+                if num <= max and num >=0 :
                     return num
                 else:
                     print("\nToo high, try again:\n")
@@ -155,10 +158,10 @@ def get_all_sub_marks(config_data):
                   'ia_value': [[ia_value]],
                   'ia_num': [[num_ia]],
                   'ia': ia_list,
-                  'credit': [[credit]],
                   'max_assignment_num': [[max_assignment_num]],
                   'max_lab_num': [[max_lab_num]],
-                  'max_ia_num': [[max_ia_num]]
+                  'max_ia_num': [[max_ia_num]],
+                  'credit': [[credit]]
                   }
     return all
 
@@ -221,7 +224,6 @@ def convert_csv_to_dict(readlines_data):
 
     all = {}
     for row in readlines_data:
-
         #gets ia_list, assignment_list, lab_list
         assignment_num_index = 4
         assignment_num = row[assignment_num_index]
@@ -254,11 +256,13 @@ def convert_csv_to_dict(readlines_data):
 
 #used to in the calculating cgpa (the denominator)
 def calc_total_value_done_sub(sub_dict):
-    assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
-
-    lab = sub_dict['lab_value'][0][0] 
-
-    ia = sub_dict['ia_value'][0][0] 
+    assignment = lab = ia = 0
+    if sub_dict['assignment_num'][0][0]:
+        assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
+    if sub_dict['lab_num'][0][0]:
+        lab = sub_dict['lab_value'][0][0] 
+    if sub_dict['ia_num'][0][0]:
+        ia = sub_dict['ia_value'][0][0] 
 
     total = assignment + lab + ia
     
@@ -428,7 +432,7 @@ def get_subject_from_csv(sub, sub_list, csv_data):
     row = csv_data[sub_index]
     assignment_num_index = 4
     assignment_num = row[assignment_num_index]
-    print("\n\nSubject: Math")
+    print(f"\n\nSubject: {sub}")
     for i in range(assignment_num):
         index = assignment_num_index+2+i*2
         print(f"\nAssignment{i+1}: scored {row[index]} out of {row[index + 1]}")
@@ -528,14 +532,14 @@ Eg: before: Lab2: scored 18 out of 20
 
 def main(file_name, config_file_name):
     config_data =  convert_config_to_dict(read_from_csv(config_file_name))
-    write_get_sub_to_csv(config_data, file_name)
+    #write_get_sub_to_csv(config_data, file_name)
     csv_data = read_from_csv(file_name)
     all_dict = convert_csv_to_dict(csv_data)
     cgpa_dict = calc_CGPA_all(all_dict)
     print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
 
-    marks_req_list = predict(all_dict, 9,max_assignment=3, max_lab=10, max_ia=3, external_expected=90)
+    marks_req_list = predict(all_dict, 9.5,max_assignment=3, max_lab=10, max_ia=3)  #can add <, external_expected=90>
     print(marks_req_list)
 
     avg_ia_mark_req, avg_external_mark_req = predict_avg_mark(marks_req_list)
@@ -545,14 +549,19 @@ def main(file_name, config_file_name):
         print(avg_external_mark_req)
 
 
-    new_read = change_and_return_data(config_data, csv_data, 'math', 'lab', num= 2, new_value=20)
+    """new_read = change_and_return_data(config_data, csv_data, 'math', 'lab', num= 2, new_value=20)
 
 
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
-        writer.writerows(new_read)
+        writer.writerows(new_read)"""
+    sub_list = []
+    for i in config_data:
+        sub_list.append(i)
+    get_subject_from_csv('ESC', sub_list, csv_data)
 
-    get_subject_from_csv('math', config_data, csv_data)
-#main(file_name = "Betina_Marks_V7.csv", config_file_name= "config_betina_sem_3.csv")
-#main(file_name = "Marks_V7.csv", config_file_name= "config_1.csv")
-create_config(8, "config_betina_sem_3.csv")
+config_filename = "config_IA_2.csv"
+excel_file_name = "Marks_V7.csv"
+
+main(file_name = excel_file_name, config_file_name = config_filename)
+#create_config(8, config_filename)

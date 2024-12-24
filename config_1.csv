@@ -4,7 +4,7 @@ chemistry,max_assignment_num,3,assignment_num,2,assignment_scale,10,assignment_v
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 plc,max_assignment_num,3,assignment_num,2,assignment_scale,10,assignment_value,10,max_lab_num,10,lab_num,4,lab_scale,12,lab_value,20,max_ia_num,3,ia_num,1,ia_scale,50,ia_value,20,credit,3
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
-caed,max_assignment_num,3,assignment_num,1,assignment_scale,5,assignment_value,7,max_lab_num,3,lab_num,1,lab_scale,15,lab_value,23,max_ia_num,3,ia_num,1,ia_scale,50,ia_value,20,credit,3
+caed,max_assignment_num,3,assignment_num,1,assignment_scale,5,assignment_value,7,max_lab_num,3,lab_num,1,lab_scale,15,lab_value,23,max_ia_num,2,ia_num,1,ia_scale,50,ia_value,20,credit,3
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 esc,max_assignment_num,3,assignment_num,2,assignment_scale,10,assignment_value,10,max_lab_num,3,lab_num,0,lab_scale,10,lab_value,10,max_ia_num,3,ia_num,1,ia_scale,50,ia_value,30,credit,3
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
