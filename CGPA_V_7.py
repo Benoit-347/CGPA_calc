@@ -256,7 +256,7 @@ def convert_csv_to_dict(readlines_data):
 
 #used to in the calculating cgpa (the denominator)
 def calc_total_value_done_sub(sub_dict):
-    assignment = lab = ia = 0
+    assignment =  lab = ia = 0
     if sub_dict['assignment_num'][0][0]:
         assignment = sub_dict['assignment_value'][0][0]       #This is also used later, combine to reduce computation
     if sub_dict['lab_num'][0][0]:
@@ -554,14 +554,10 @@ def main(file_name, config_file_name):
 
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
-        writer.writerows(new_read)"""
-    sub_list = []
-    for i in config_data:
-        sub_list.append(i)
-    get_subject_from_csv('ESC', sub_list, csv_data)
+        writer.writerows(new_read)
 
-config_filename = "config_IA_2.csv"
-excel_file_name = "Marks_V7.csv"
-
-main(file_name = excel_file_name, config_file_name = config_filename)
-#create_config(8, config_filename)
+    get_subject_from_csv('math', config_data, csv_data)
+    config_file_name = ""
+    file_name = ""
+create_config(8, config_file_name)
+main(file_name, config_file_name)
