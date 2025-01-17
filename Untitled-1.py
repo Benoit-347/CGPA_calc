@@ -424,7 +424,7 @@ def predict_avg_mark(req_mark_list):
     if avg_ia_mark_req<=50 and avg_external_mark_req <= 100:
         return avg_ia_mark_req, avg_external_mark_req
     else:
-        return None, "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
+        return None, "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\n(tip: try changing req cgpa)\n"
 
 
 def get_subject_from_csv(sub, sub_list, csv_data):
@@ -527,7 +527,7 @@ change_and_return_data(sub_list, csv_data, 'math', 'lab', num= 2, new_value=20)
 #Used to change specific values from a csv file, returns a csv_format_list that contains the changed values
 Eg: before: Lab2: scored 18 out of 20
     after:  Lab2: scored 20 out of 20
-"""
+
 
 
 def main(file_name, config_file_name):
@@ -549,17 +549,45 @@ def main(file_name, config_file_name):
         print(avg_external_mark_req)
 
 
-    """new_read = change_and_return_data(config_data, csv_data, 'math', 'lab', num= 2, new_value=20)
+new_read = change_and_return_data(config_data, csv_data, 'math', 'lab', num= 2, new_value=20)
 
 
     with open(file_name, 'w') as file1:
         writer = csv.writer(file1)
-        writer.writerows(new_read)"""
+        writer.writerows(new_read)
     sub_list = []
     for i in config_data:
         sub_list.append(i)
     get_subject_from_csv('ESC', sub_list, csv_data)
 
+config_filename = "config_IA_2.csv"
+excel_file_name = "Marks_V7.csv"
+
+main(file_name = excel_file_name, config_file_name = config_filename)
+#create_config(8, config_filename)
+
+"""
+
+def main(file_name, config_file_name):
+    config_data =  convert_config_to_dict(read_from_csv(config_file_name))
+    #write_get_sub_to_csv(config_data, file_name)
+    csv_data = read_from_csv(file_name)
+    all_dict = convert_csv_to_dict(csv_data)
+    cgpa_dict = calc_CGPA_all(all_dict)
+    print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
+    print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
+
+    marks_req_list = predict(all_dict, 9.5,max_assignment=3, max_lab=10, max_ia=3)  #can add <, external_expected=90>
+    print(marks_req_list)
+    avg_ia_mark_req, avg_external_mark_req = predict_avg_mark(marks_req_list)
+    if avg_ia_mark_req != None:
+        print(f"\nNeed to score IA: {avg_ia_mark_req} marks\nNeed to score Finals: {avg_external_mark_req} marks in all subjects to get specified CGPA\n")
+    else:
+        print(avg_external_mark_req)
+    sub_list = []
+    for i in config_data:
+        sub_list.append(i)
+    get_subject_from_csv('ESC', sub_list, csv_data)
 config_filename = "config_IA_2.csv"
 excel_file_name = "Marks_V7.csv"
 
