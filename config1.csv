@@ -1,0 +1,3 @@
+plc,max_assignment_num,3,assignment_num,1,assignment_scale,10,assignment_value,10,max_lab_num,10,lab_num,4,lab_scale,12,lab_value,10,max_ia_num,3,ia_num,2,ia_scale,50,ia_value,30,credit,3
+chemistry,max_assignment_num,3,assignment_num,1,assignment_scale,10,assignment_value,10,max_lab_num,10,lab_num,4,lab_scale,12,lab_value,10,max_ia_num,3,ia_num,2,ia_scale,50,ia_value,30,credit,3
+esc,max_assignment_num,3,assignment_num,1,assignment_scale,10,assignment_value,10,max_lab_num,3,lab_num,1,lab_scale,12,lab_value,10,max_ia_num,3,ia_num,1,ia_scale,50,ia_value,30,credit,3

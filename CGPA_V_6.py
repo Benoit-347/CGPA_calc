@@ -512,7 +512,6 @@ Eg: before: Lab2: scored 18 out of 20
     after:  Lab2: scored 20 out of 20
 """
 
-print(convert_config_to_dict(read_from_csv("trial_config.csv")))
 
 def main(file_name):
     sub_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
@@ -541,4 +540,5 @@ def main(file_name):
         writer.writerows(new_read)
 
     get_subject_from_csv('math', sub_list, csv_data)
-#main(file_name = "Marks_V5_trial.csv")
+sub_list = ['math', 'chemistry', 'plc', 'caed', 'civil', 'english', 'sfh', 'kannada']
+main(file_name = "Marks_V5_trial.csv")

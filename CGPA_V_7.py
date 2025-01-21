@@ -365,17 +365,17 @@ def get_req_value(sub_dict, req_cgpa, max_assignment = 3, max_lab = 10, max_ia =
 
     if external_expected == None:
         percent_req_ia_external = (req_value/(ia_value*num_ia_left/max_ia + 50))
-
-
         ia_value_req, external_value_req = ia_value*percent_req_ia_external, 50*percent_req_ia_external
         ia_mark_req = 50*(ia_value_req/ia_value)
         external_mark_req = 100*(external_value_req/50)
+        print(ia_value_req)
         return num_ia_left, ia_mark_req, external_mark_req
 
     else:
         req_ia_only_value = req_value - external_expected/2
         per_ia = req_ia_only_value/num_ia_left
         ia_mark_req = max_ia*50*(per_ia/ia_value)
+        print(req_value)
         return ia_mark_req
 
 #main prediction fn
@@ -421,7 +421,7 @@ def predict_avg_mark(req_mark_list):
         j += 1
     avg_ia_mark_req = total_ia/20
     avg_external_mark_req = total_external/20
-    if avg_ia_mark_req<=50 and avg_external_mark_req <= 100:
+    if avg_ia_mark_req <=50 and avg_external_mark_req <= 100:
         return avg_ia_mark_req, avg_external_mark_req
     else:
         return None, "\n***************\n\nMarks too low, it is not possible to get specified CGPA\n\n***************\n\nDon't be delusional.\n\n(tip: try changing req cgpa)\n"
@@ -539,7 +539,7 @@ def main(file_name, config_file_name):
     print(f"\nDict of each sub cgpa and credit:\n\n{cgpa_dict}")
     print(f"\nThis sem's CGPA: {round(calc_CGPA_sem(cgpa_dict), 2)}\n")
 
-    marks_req_list = predict(all_dict, 9.5,max_assignment=3, max_lab=10, max_ia=3)  #can add <, external_expected=90>
+    marks_req_list = predict(all_dict, 9,max_assignment=3, max_lab=10, max_ia=3)  #can add <, external_expected=90>
     print(marks_req_list)
 
     avg_ia_mark_req, avg_external_mark_req = predict_avg_mark(marks_req_list)
@@ -563,5 +563,7 @@ def main(file_name, config_file_name):
 config_filename = "config_IA_2.csv"
 excel_file_name = "Marks_V7.csv"
 
+
 main(file_name = excel_file_name, config_file_name = config_filename)
+
 #create_config(8, config_filename)
